@@ -7,11 +7,11 @@ const musicasContainer = document.querySelector('.musicas-container');
 const anteriorEProximo = document.querySelector('.anterior-e-proximo');
 
 
-const handleDados = res => res.ok ? res.json() : Promise.reject(statusText);
-
-const fetchLetraDeMusicas = (termo) => {
-  fetch(`${url}/suggest/${termo}`)
-    .then(handleDados)
+const fetchLetraDeMusicas = async (termo) => {
+  const resposta = await fetch(`${url}/suggest/${termo}`);
+  const respostaJson = resposta.ok ? resposta.json() : Promise.reject(statusText);
+  const dados = await respostaJson; 
+  console.log(dados)
 }
 
 
