@@ -70,11 +70,12 @@ body {
   padding: 4px 10px;
 }
 
-.musicas-container {
-  list-style-type: none;
-  padding: 0;
-  margin: 30px auto;
-  max-width: 100%;
-  width: 500px;
-  background-color: #10161B;
+.aviso-vermelho {
+  display: flex;
+  flex-direction: column;
+  color: #e45959;
+  font-size: 1.25em;
+  line-height: 1.4em;
+  justify-content: center;
+  align-items: center;
 }
