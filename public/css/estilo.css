@@ -70,6 +70,7 @@ body {
   color: #fff;
   padding: 4px 10px;
   margin-left: 10px;
+  cursor: pointer;
 }
 
 .aviso-vermelho {
@@ -93,7 +94,12 @@ body {
 .musica {
   display: flex;
   margin: 10px 0;
+  font-size:1.25em;
   color: #666;
+}
+
+.musica-titulo{
+  font-size: 2.25em;
 }
 
 .btn-proximo {
@@ -101,9 +107,14 @@ body {
   border-radius: 5px;
 }
 
+.btn-anterior {
+  padding: 8px 15px;
+  border-radius: 5px;
+  
+}
+
 .anterior-e-proximo {
   width: 960px;
   margin: 40px auto;
-  border: 1px solid red;
   text-align: center;
 }
