@@ -6,13 +6,32 @@ const btn = document.querySelector('.busca-btn');
 const musicasContainer = document.querySelector('.musicas-container');
 const anteriorEProximo = document.querySelector('.anterior-e-proximo');
 
+
+const buscarMaisMusicas = async (url) => {
+  const resposta = await fetch(url);
+  const data = await resposta.json();
+}
+
 const inserindoMusicasNaPagina = (musicas) => {
-  musicasContainer.innerHTML = musicas.data.map(musica => 
+  musicasContainer.innerHTML = musicas.data.map(musica =>
     ` 
-    <li class="musica"> <strong> ${musica.artist.name} </strong> - ${musica.title}</li>
-    <button class="busca-btn">Veja Letra</button>
+    <li class="musica"> 
+    <span class="musica-artista">
+    <strong> ${musica.artist.name} </strong> - ${musica.title} 
+    </span>
+    <button class="btn">Veja Letra</button>
+    </li>
 
     `).join('');
+
+    if(musicas.prev || musicas.next){
+      anteriorEProximo.innerHTML = `
+      ${musicas.prev ? `<button class="btn btn-proximo" onClick="buscarMaisMusicas('${musicas.prev}')">Anteriores</button>` : ''}
+      ${musicas.next ? `<button class="btn btn-proximo" onClick="buscarMaisMusicas('${musicas.next}')">Proximas</button>` : ''}
+      `
+      return
+    }
+
 }
 
 const fetchLetraDeMusicas = async (termo) => {
