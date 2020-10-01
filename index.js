@@ -15,45 +15,53 @@ const fetchDados = async (url) => {
 
 const buscarMaisMusicas = async (url) => {
   const dados = await fetchDados(`https://cors-anywhere.herokuapp.com/${url}`)
-  inserindoMusicasNaPagina(dados);
+  inserirMusicaNaPagina(dados);
 };
 
-const inserindoMusicasNaPagina = (musicas) => {
-  musicasContainer.innerHTML = musicas.data.map(musica =>
+
+const inserirAnteriorEProximoNaPagina = ({ prev, next }) => {
+  if (prev || next) {
+    anteriorEProximo.innerHTML = `
+      ${prev ? `<button class="btn btn-anterior" onClick="buscarMaisMusicas('${prev}')">Anteriores</button>` : ''}
+      ${next ? `<button class="btn btn-proximo" onClick="buscarMaisMusicas('${next}')">Proximas</button>` : ''}
+      `
+    return
+  }
+  anteriorEProximo.innerHTML = '';
+}
+
+
+
+const inserirMusicaNaPagina = ({ data, prev, next }) => {
+  musicasContainer.innerHTML = data.map(({ artist: { name }, title }) =>
     ` 
     <li class="musica"> 
       <span class="musica-artista">
-      <strong> ${musica.artist.name} </strong> - ${musica.title} 
+      <strong> ${name} </strong> - ${title} 
       </span>
-      <button class="btn" data-artista="${musica.artist.name}" data-titulo-musica="${musica.title}">Veja Letra</button>
+      <button class="btn" data-artista="${name}" data-titulo-musica="${title}">Veja Letra</button>
     </li>
 
     `).join('');
 
-  if (musicas.prev || musicas.next) {
-    anteriorEProximo.innerHTML = `
-      ${musicas.prev ? `<button class="btn btn-anterior" onClick="buscarMaisMusicas('${musicas.prev}')">Anteriores</button>` : ''}
-      ${musicas.next ? `<button class="btn btn-proximo" onClick="buscarMaisMusicas('${musicas.next}')">Proximas</button>` : ''}
-      `
-    return
-  }
-
+  inserirAnteriorEProximoNaPagina({ prev, next });
 }
 
-const inserindoLetraDaMusicaNaPagina = (musica) => {
-  if (musica.letraDaMusicaFormatada === '') {
+const inserindoLetraDaMusicaNaPagina = ({ letraDaMusicaFormatada, tituloDaMusica, nomeDoArtista }) => {
+  if (letraDaMusicaFormatada === '') {
     musicasContainer.innerHTML = `
       <li>
-        <h2 class="texto-claro">Desculpa letra <strong class="texto-escuro">(${musica.tituloDaMusica})</strong> não encontrado</h2>
+        <h2 class="texto-claro">Desculpa letra <strong class="texto-escuro">(${tituloDaMusica})</strong> não encontrado</h2>
       </li>
     `
     return
   }
 
+
   musicasContainer.innerHTML = `
   <li>
-    <h2><strong>${musica.tituloDaMusica}</strong> - ${musica.nomeDoArtista}</h2>
-    <p class="musica">${musica.letraDaMusicaFormatada}</p>
+    <h2><strong>${tituloDaMusica}</strong> - ${nomeDoArtista}</h2>
+    <p class="musica">${letraDaMusicaFormatada}</p>
   </li>
 `
 }
@@ -63,7 +71,7 @@ const fetchMusicas = async (nomeDoArtista, tituloDaMusica) => {
   const dados = await fetchDados(`${apiUrl}/v1/${nomeDoArtista}/${tituloDaMusica}`)
   const letraDaMusicaFormatada = dados.lyrics.replace(/(\r\n|\r|\n)/g, '<br>');
 
-  inserindoLetraDaMusicaNaPagina({letraDaMusicaFormatada, nomeDoArtista, tituloDaMusica} );
+  inserindoLetraDaMusicaNaPagina({ letraDaMusicaFormatada, nomeDoArtista, tituloDaMusica });
 }
 
 
@@ -82,7 +90,7 @@ musicasContainer.addEventListener('click', e => {
 const fetchLetraDeMusicas = async (termo) => {
   const dados = await fetchDados(`${apiUrl}/suggest/${termo}`);
 
-  inserindoMusicasNaPagina(dados)
+  inserirMusicaNaPagina(dados)
 
 }
 
