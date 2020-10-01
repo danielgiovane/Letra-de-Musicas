@@ -7,12 +7,15 @@ const musicasContainer = document.querySelector('.musicas-container');
 const anteriorEProximo = document.querySelector('.anterior-e-proximo');
 
 
+const fetchDados = async (url) => {
+  const resposta = await fetch(url);
+  const respostaJson = resposta.ok ? resposta.json() : Promise.reject(statusText);
+  return await respostaJson;
+}
+
 const buscarMaisMusicas = async (url) => {
-  const resposta = await fetch(`https://cors-anywhere.herokuapp.com/${url}`);
-  const dados = await resposta.json();
-
+  const dados = await fetchDados(`https://cors-anywhere.herokuapp.com/${url}`)
   inserindoMusicasNaPagina(dados);
-
 };
 
 const inserindoMusicasNaPagina = (musicas) => {
@@ -37,19 +40,32 @@ const inserindoMusicasNaPagina = (musicas) => {
 
 }
 
-const fetchMusicas = async (nomeDoArtista, tituloDaMusica) => {
-  const resposta = await fetch(`${apiUrl}/v1/${nomeDoArtista}/${tituloDaMusica}`);
-  const dados = await resposta.json();
-
-  const letraDaMusicaFormatada = dados.lyrics.replace(/(\r\n|\r|\n)/g, '<br>');
+const inserindoLetraDaMusicaNaPagina = (musica) => {
+  if (musica.letraDaMusicaFormatada === '') {
+    musicasContainer.innerHTML = `
+      <li>
+        <h2 class="texto-claro">Desculpa letra <strong class="texto-escuro">(${musica.tituloDaMusica})</strong> não encontrado</h2>
+      </li>
+    `
+    return
+  }
 
   musicasContainer.innerHTML = `
-    <li>
-      <h2><strong>${tituloDaMusica}</strong> - ${nomeDoArtista}</h2>
-      <p class="musica">${letraDaMusicaFormatada}</p>
-    </li>
-  `
+  <li>
+    <h2><strong>${musica.tituloDaMusica}</strong> - ${musica.nomeDoArtista}</h2>
+    <p class="musica">${musica.letraDaMusicaFormatada}</p>
+  </li>
+`
 }
+
+
+const fetchMusicas = async (nomeDoArtista, tituloDaMusica) => {
+  const dados = await fetchDados(`${apiUrl}/v1/${nomeDoArtista}/${tituloDaMusica}`)
+  const letraDaMusicaFormatada = dados.lyrics.replace(/(\r\n|\r|\n)/g, '<br>');
+
+  inserindoLetraDaMusicaNaPagina({letraDaMusicaFormatada, nomeDoArtista, tituloDaMusica} );
+}
+
 
 musicasContainer.addEventListener('click', e => {
   const elementoClicado = e.target;
@@ -64,9 +80,7 @@ musicasContainer.addEventListener('click', e => {
 })
 
 const fetchLetraDeMusicas = async (termo) => {
-  const resposta = await fetch(`${apiUrl}/suggest/${termo}`);
-  const respostaJson = resposta.ok ? resposta.json() : Promise.reject(statusText);
-  const dados = await respostaJson;
+  const dados = await fetchDados(`${apiUrl}/suggest/${termo}`);
 
   inserindoMusicasNaPagina(dados)
 
