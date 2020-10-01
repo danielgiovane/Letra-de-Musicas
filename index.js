@@ -31,7 +31,6 @@ const inserirAnteriorEProximoNaPagina = ({ prev, next }) => {
 }
 
 
-
 const inserirMusicaNaPagina = ({ data, prev, next }) => {
   musicasContainer.innerHTML = data.map(({ artist: { name }, title }) =>
     ` 
