@@ -66,7 +66,6 @@ const inserindoLetraDaMusicaNaPagina = ({ letraDaMusicaFormatada, tituloDaMusica
 `
 }
 
-
 const fetchMusicas = async (nomeDoArtista, tituloDaMusica) => {
   const dados = await fetchDados(`${apiUrl}/v1/${nomeDoArtista}/${tituloDaMusica}`)
   const letraDaMusicaFormatada = dados.lyrics.replace(/(\r\n|\r|\n)/g, '<br>');
@@ -74,28 +73,25 @@ const fetchMusicas = async (nomeDoArtista, tituloDaMusica) => {
   inserindoLetraDaMusicaNaPagina({ letraDaMusicaFormatada, nomeDoArtista, tituloDaMusica });
 }
 
-
-musicasContainer.addEventListener('click', e => {
+const lidandoComClickNoContainerMusica = e => {
   const elementoClicado = e.target;
   if (elementoClicado.tagName === 'BUTTON') {
     const nomeDoArtista = elementoClicado.getAttribute('data-artista');
     const tituloDaMusica = elementoClicado.getAttribute('data-titulo-musica');
-
     anteriorEProximo.innerHTML = '';
-
     fetchMusicas(nomeDoArtista, tituloDaMusica);
   }
-})
+}
+musicasContainer.addEventListener('click', lidandoComClickNoContainerMusica);
+
 
 const fetchLetraDeMusicas = async (termo) => {
   const dados = await fetchDados(`${apiUrl}/suggest/${termo}`);
-
   inserirMusicaNaPagina(dados)
-
 }
 
 
-form.addEventListener('submit', function (e) {
+const lidandoComClickNoForm (e) => {
   e.preventDefault();
 
   const termoDaBusca = inputSearch.value.trim();
@@ -106,4 +102,5 @@ form.addEventListener('submit', function (e) {
 
   fetchLetraDeMusicas(termoDaBusca);
 
-})
+}
+form.addEventListener('submit', lidandoComClickNoForm);
