@@ -90,7 +90,7 @@ const fetchLetraDeMusicas = async (termo) => {
 }
 
 
-const lidandoComClickNoForm (e) => {
+const lidandoComClickNoForm = (e) => {
   e.preventDefault();
 
   const termoDaBusca = inputSearch.value.trim();
