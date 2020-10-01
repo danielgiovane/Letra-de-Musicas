@@ -1,4 +1,4 @@
-const url = `https://api.lyrics.ovh`;
+const apiUrl = `https://api.lyrics.ovh`;
 
 const form = document.querySelector('.form');
 const inputSearch = document.querySelector('.search');
@@ -12,16 +12,17 @@ const buscarMaisMusicas = async (url) => {
   const dados = await resposta.json();
 
   inserindoMusicasNaPagina(dados);
-}
+
+};
 
 const inserindoMusicasNaPagina = (musicas) => {
   musicasContainer.innerHTML = musicas.data.map(musica =>
     ` 
     <li class="musica"> 
-    <span class="musica-artista">
-    <strong> ${musica.artist.name} </strong> - ${musica.title} 
-    </span>
-    <button class="btn" data-artista="${musica.artist.name}" data-titulo-musica="${musica.title}">Veja Letra</button>
+      <span class="musica-artista">
+      <strong> ${musica.artist.name} </strong> - ${musica.title} 
+      </span>
+      <button class="btn" data-artista="${musica.artist.name}" data-titulo-musica="${musica.title}">Veja Letra</button>
     </li>
 
     `).join('');
@@ -37,16 +38,17 @@ const inserindoMusicasNaPagina = (musicas) => {
 }
 
 const fetchMusicas = async (nomeDoArtista, tituloDaMusica) => {
-  const resposta = await fetch(`${url}/v1/${nomeDoArtista}/${tituloDaMusica}`);
+  const resposta = await fetch(`${apiUrl}/v1/${nomeDoArtista}/${tituloDaMusica}`);
   const dados = await resposta.json();
+
+  const letraDaMusicaFormatada = dados.lyrics.replace(/(\r\n|\r|\n)/g, '<br>');
 
   musicasContainer.innerHTML = `
     <li>
       <h2><strong>${tituloDaMusica}</strong> - ${nomeDoArtista}</h2>
-      <p class="musica">${dados.lyrics}</p>
+      <p class="musica">${letraDaMusicaFormatada}</p>
     </li>
   `
-
 }
 
 musicasContainer.addEventListener('click', e => {
@@ -62,7 +64,7 @@ musicasContainer.addEventListener('click', e => {
 })
 
 const fetchLetraDeMusicas = async (termo) => {
-  const resposta = await fetch(`${url}/suggest/${termo}`);
+  const resposta = await fetch(`${apiUrl}/suggest/${termo}`);
   const respostaJson = resposta.ok ? resposta.json() : Promise.reject(statusText);
   const dados = await respostaJson;
 
